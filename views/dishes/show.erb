@@ -4,10 +4,25 @@
 
 <p><%= @dish['name'] %></p>
 
-<p>number of likes: <%= @likes_count %></p>
+<p>number of likes: <span class="likes_count"><%= @likes_count %></span></p>
 
 
 <form action="/likes" method="post">
   <input type="hidden" name="dish_id" value="<%= @dish['id'] %>">
   <button>like</button>
 </form>
+
+
+<script>
+  const form = document.querySelector('form')
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    axios({ url: '/api/likes', method: 'post', params: { dish_id: 25 }})
+      .then(res => {
+        document.querySelector('.likes_count').textContent = res.data.likes_count
+      })   
+
+  })
+</script>

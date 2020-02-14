@@ -42,15 +42,24 @@ post '/login' do
   end
 end
 
+# this endpoint is intended for normal form request
 post '/likes' do
-
-
   run_sql(
     'insert into likes (user_id, dish_id) values ($1, $2);', 
     [session[:user_id], params[:dish_id]]
   )
-
   redirect "/dishes/#{ params[:dish_id] }"
+end
+
+# use this endpoint - making request using js
+post '/api/likes' do
+  run_sql(
+    'insert into likes (user_id, dish_id) values ($1, $2);', 
+    [session[:user_id], params[:dish_id]]
+  )
+  results = run_sql('select count(*) as likes_count from likes where dish_id = $1', [params[:dish_id]])
+  # redirect "/dishes/#{ params[:dish_id] }"
+  { likes_count:  results[0]['likes_count'] }.to_json
 end
 
 require_relative 'controllers/dishes_controller'
